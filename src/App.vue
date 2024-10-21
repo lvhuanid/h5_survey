@@ -1,85 +1,124 @@
 <script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
+// import HelloWorld from './components/HelloWorld.vue'
+import items from "./data/table.json"
+const formItem = [
+  { id: 123, type: 223, value: 555 }
+]
+
+function buttonClick() {
+  const formData = new FormData(event.target); // Get form data
+  const data = {};
+
+  formData.forEach((value, key) => {
+    // If the key already exists, initialize it as an array (if not already)
+    if (data[key]) {
+      // Ensure it is an array
+      if (!Array.isArray(data[key])) {
+        data[key] = [data[key]]; // Convert existing value to an array
+      }
+      // Push the new value into the array
+      data[key].push(value);
+    } else {
+      // If the key doesn't exist, just set it
+      data[key] = value;
+    }
+  });
+
+  console.log(data); // Log the serialized form data
+}
 </script>
 
 <template>
-  <div class=" h-screen w-screen bg-yellow-200">
-    <div class=" h-4 text-blue-500"> is me</div>
-    <div class="bg-white border rounded-lg px-8 py-6 mx-auto my-8 max-w-2xl">
-      <h2 class="text-2xl font-medium mb-4">Survey</h2>
-      <form>
+  <div class="bg-white border rounded-lg px-8 py-6 mx-auto my-8 max-w-2xl">
+    <h2 class="text-2xl font-medium mb-4">Survey</h2>
+    <form @submit.prevent="buttonClick">
+      <div v-for="item, index in items" :key="item.id" class="mb-4">
         <div class="mb-4">
-          <label for="name" class="block text-gray-700 font-medium mb-2">Name</label>
-          <input type="text" id="name" name="name"
-            class="border border-gray-400 p-2 w-full rounded-lg focus:outline-none focus:border-blue-400" required>
-        </div>
-        <div class="mb-4">
-          <label for="age" class="block text-gray-700 font-medium mb-2">Age</label>
-          <input type="number" id="age" name="age"
-            class="border border-gray-400 p-2 w-full rounded-lg focus:outline-none focus:border-blue-400" required>
-        </div>
-        <div class="mb-4">
-          <label for="gender" class="block text-gray-700 font-medium mb-2">Gender</label>
-          <select id="gender" name="gender"
-            class="border border-gray-400 p-2 w-full rounded-lg focus:outline-none focus:border-blue-400" required>
-            <option value="">Select gender</option>
-            <option value="male">Male</option>
-            <option value="female">Female</option>
-            <option value="other">Other</option>
-          </select>
-        </div>
-        <div class="mb-4">
-          <label class="block text-gray-700 font-medium mb-2">What is your favorite color?</label>
-          <div class="flex flex-wrap -mx-2">
-            <div class="px-2 w-1/3">
-              <label for="color-red" class="block text-gray-700 font-medium mb-2">
-                <input type="radio" id="color-red" name="color" value="red" class="mr-2">Red
-              </label>
+          <label :for="item.id" class="block text-gray-700 font-medium mb-2">{{ index + 1 }}.{{ item.label }}{{
+            item.type === "options" ? "【多选题】" : "" }}</label>
+          <template v-if="item.type === 'input'">
+            <input type="text" :id="item.id" :name="item.id"
+              class="border border-gray-400 p-2 w-full rounded-lg focus:outline-none focus:border-blue-400" required>
+          </template>
+          <template v-if="item.type === 'select'">
+            <select :id="item.id" :name="item.id"
+              class="border border-gray-400 p-2 w-full rounded-lg focus:outline-none focus:border-blue-400" required>
+              <option v-for="select in item.selects" :key="select.id" :value="select.value">{{ select.value }}</option>
+            </select>
+          </template>
+          <template v-if="item.type === 'options'">
+            <div class="mb-4">
+              <div class="flex flex-wrap flex-col -mx-2">
+                <div v-for="select in item.selects" :key="select.id" class="px-2 w-1/3">
+                  <label :for="select.value" class="block text-gray-700 font-medium mb-2">
+                    <input type="checkbox" :name="item.id" :value="select.value" class="mr-2">{{
+                      select.value }}
+                  </label>
+                </div>
+              </div>
             </div>
-            <div class="px-2 w-1/3">
-              <label for="color-blue" class="block text-gray-700 font-medium mb-2">
-                <input type="radio" id="color-blue" name="color" value="blue" class="mr-2">Blue
-              </label>
+          </template>
+          <template v-if="item.type === 'option'">
+            <div class="mb-4">
+              <div v-for="select in item.selects" :key="select.id" class="flex flex-wrap flex-col -mx-2">
+                <div class="px-2 w-1/3">
+                  <label :for="select.value" class="block text-gray-700 font-medium mb-2">
+                    <input type="radio" :name="item.id" :value="select.value" class="mr-2">{{
+                      select.value }}
+                  </label>
+                </div>
+              </div>
             </div>
-            <div class="px-2 w-1/3">
-              <label for="color-green" class="block text-gray-700 font-medium mb-2">
-                <input type="radio" id="color-green" name="color" value="green" class="mr-2">Green
-              </label>
-            </div>
-          </div>
+          </template>
         </div>
-        <div class="mb-4">
-          <label class="block text-gray-700 font-medium mb-2">What is your favorite animal?</label>
-          <div class="flex flex-wrap -mx-2">
-            <div class="px-2 w-1/3">
-              <label for="animal-cat" class="block text-gray-700 font-medium mb-2">
-                <input type="checkbox" id="animal-cat" name="animal[]" value="cat" class="mr-2">Cat
-              </label>
-            </div>
-            <div class="px-2 w-1/3">
-              <label for="animal-dog" class="block text-gray-700 font-medium mb-2">
-                <input type="checkbox" name="animal[]" value="dog" class="mr-2">Dog
-              </label>
-            </div>
-            <div class="px-2 w-1/3">
-              <label for="animal-bird" class="block text-gray-700 font-medium mb-2">
-                <input type="checkbox" id="animal-bird" name="animal[]" value="bird" class="mr-2">Bird
-              </label>
-            </div>
-          </div>
-        </div>
-        <div class="mb-4">
-          <label for="message" class="block text-gray-700 font-medium mb-2">Message</label>
-          <textarea id="message" name="message"
-            class="border border-gray-400 p-2 w-full rounded-lg focus:outline-none focus:border-blue-400"
-            rows="5"></textarea>
-        </div>
-        <div>
-          <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">Submit</button>
-        </div>
+      </div>
+      <!-- <div class="mb-4">
+        <label for="message" class="block text-gray-700 font-medium mb-2">Message</label>
+        <textarea id="message" name="message"
+          class="border border-gray-400 p-2 w-full rounded-lg focus:outline-none focus:border-blue-400"
+          rows="5"></textarea>
+      </div> -->
+      <div>
+        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">Submit</button>
+      </div>
 
-      </form>
-    </div>
+    </form>
   </div>
   <!-- <HelloWorld msg="Vite + Vue" /> -->
 </template>
+
+// {
+// "id": "Name",
+// "label": "Name",
+// "type": "input"
+// },
+// {
+// "id": "s1",
+// "label": "Gender",
+// "type": "select",
+// "selects": [
+// { "id": "color-red", "name": "color", "value": "red" },
+// { "id": "color-blue", "name": "color", "value": "blue" },
+// { "id": "color-gree", "name": "color", "value": "gree" }
+// ]
+// },
+// {
+// "id": "color",
+// "label": "What is your favorite color?",
+// "type": "option",
+// "selects": [
+// { "id": "color-red", "name": "color", "value": "red" },
+// { "id": "color-blue", "name": "color", "value": "blue" },
+// { "id": "color-gree", "name": "color", "value": "gree" }
+// ]
+// },
+// {
+// "id": "animal",
+// "label": "What is your favorite animal?",
+// "type": "options",
+// "selects": [
+// { "id": "animal-cat", "name": "animal", "value": "cat" },
+// { "id": "animal-dog", "name": "animal", "value": "dog" },
+// { "id": "animal-bird", "name": "animal", "value": "bird" }
+// ]
+// },
