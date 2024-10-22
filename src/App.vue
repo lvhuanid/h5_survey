@@ -1,33 +1,3 @@
-<script setup lang="ts">
-// import HelloWorld from './components/HelloWorld.vue'
-import items from "./data/table.json"
-const formItem = [
-  { id: 123, type: 223, value: 555 }
-]
-
-function buttonClick() {
-  const formData = new FormData(event.target); // Get form data
-  const data = {};
-
-  formData.forEach((value, key) => {
-    // If the key already exists, initialize it as an array (if not already)
-    if (data[key]) {
-      // Ensure it is an array
-      if (!Array.isArray(data[key])) {
-        data[key] = [data[key]]; // Convert existing value to an array
-      }
-      // Push the new value into the array
-      data[key].push(value);
-    } else {
-      // If the key doesn't exist, just set it
-      data[key] = value;
-    }
-  });
-
-  console.log(data); // Log the serialized form data
-}
-</script>
-
 <template>
   <div class="bg-white border rounded-lg px-8 py-8 mx-auto max-w-2xl">
     <h2 class="text-2xl font-medium mb-4">Survey</h2>
@@ -86,7 +56,40 @@ function buttonClick() {
   </div>
   <!-- <HelloWorld msg="Vite + Vue" /> -->
 </template>
+<script setup>
+// import HelloWorld from './components/HelloWorld.vue'
+import items from "./data/table.json"
+import { initAxios, apiGet1 } from "./api/api.js"
+import { onMounted } from 'vue';
 
+
+const buttonClick = () => {
+  const formData = new FormData(event.target); // Get form data
+  const data = {};
+
+  formData.forEach((value, key) => {
+    // If the key already exists, initialize it as an array (if not already)
+    if (data[key]) {
+      // Ensure it is an array
+      if (!Array.isArray(data[key])) {
+        data[key] = [data[key]]; // Convert existing value to an array
+      }
+      // Push the new value into the array
+      data[key].push(value);
+    } else {
+      // If the key doesn't exist, just set it
+      data[key] = value;
+    }
+  });
+  console.log(data); // Log the serialized form data
+}
+onMounted(async () => {
+  await initAxios();
+  const c = await apiGet1({ a: 1 })
+  console.log(123)
+
+});
+</script>
 // {
 // "id": "Name",
 // "label": "Name",
