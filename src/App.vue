@@ -29,7 +29,7 @@ function buttonClick() {
 </script>
 
 <template>
-  <div class="bg-white border rounded-lg px-8 py-6 mx-auto my-8 max-w-2xl">
+  <div class="bg-white border rounded-lg px-8 py-8 mx-auto max-w-2xl">
     <h2 class="text-2xl font-medium mb-4">Survey</h2>
     <form @submit.prevent="buttonClick">
       <div v-for="item, index in items" :key="item.id" class="mb-4">
@@ -49,7 +49,7 @@ function buttonClick() {
           <template v-if="item.type === 'options'">
             <div class="mb-4">
               <div class="flex flex-wrap flex-col -mx-2">
-                <div v-for="select in item.selects" :key="select.id" class="px-2 w-1/3">
+                <div v-for="select in item.selects" :key="select.id" class="px-2">
                   <label :for="select.value" class="block text-gray-700 font-medium mb-2">
                     <input type="checkbox" :name="item.id" :value="select.value" class="mr-2">{{
                       select.value }}
@@ -61,7 +61,7 @@ function buttonClick() {
           <template v-if="item.type === 'option'">
             <div class="mb-4">
               <div v-for="select in item.selects" :key="select.id" class="flex flex-wrap flex-col -mx-2">
-                <div class="px-2 w-1/3">
+                <div class="px-2">
                   <label :for="select.value" class="block text-gray-700 font-medium mb-2">
                     <input type="radio" :name="item.id" :value="select.value" class="mr-2">{{
                       select.value }}
