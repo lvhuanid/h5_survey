@@ -85,7 +85,7 @@ const buttonClick = () => {
 }
 onMounted(async () => {
   await initAxios();
-  // const c = await apiGet1({ a: 1 })
+  const c = await apiGet1({ a: 1 })
   console.log(123)
 
 });
