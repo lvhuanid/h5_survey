@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const initAxios = (dispatch) => {
-  axios.defaults.baseURL = "http://8.153.101.160:8888/api";
+  axios.defaults.baseURL = "http://8.153.101.160:8080/api";
   axios.defaults.validateStatus = (status) => {
     if ([401, 500, 504].includes(status)) {
       dispatch("401");
