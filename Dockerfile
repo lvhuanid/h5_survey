@@ -1,29 +1,11 @@
-# Use the official Node.js image to build the application
-FROM node
+# 使用 Nginx 官方镜像
+FROM nginx:alpine
 
-# Set the working directory
-WORKDIR /app
+# 复制构建好的文件到 Nginx 的 html 目录
+COPY dist /usr/share/nginx/html
 
-# Copy package.json and package-lock.json
-COPY package*.json ./
-
-# Install dependencies
-RUN npm install
-
-# Copy the rest of the application files
-COPY . .
-
-# Build the application
-RUN npm run build
-
-# Use Nginx to serve the application
-FROM nginx
-
-# Copy the built files from the previous stage to Nginx
-COPY --from=build /app/dist /usr/share/nginx/html
-
-# Copy the Nginx configuration file
+# 复制 Nginx 配置文件
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Expose port 80
+# 暴露端口
 EXPOSE 80
