@@ -1,10 +1,29 @@
+# Use the official Node.js image to build the application
+FROM node
+
+# Set the working directory
+WORKDIR /app
+
+# Copy package.json and package-lock.json
+COPY package*.json ./
+
+# Install dependencies
+RUN npm install
+
+# Copy the rest of the application files
+COPY . .
+
+# Build the application
+RUN npm run build
+
+# Use Nginx to serve the application
 FROM nginx
 
-# 复制构建好的 Vue 项目到 Nginx 的 html 目录
-COPY dist/ /usr/share/nginx/html
+# Copy the built files from the previous stage to Nginx
+COPY --from=build /app/dist /usr/share/nginx/html
 
-# 如果有自定义的 Nginx 配置文件，可以替换默认配置
+# Copy the Nginx configuration file
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# 暴露端口
+# Expose port 80
 EXPOSE 80
