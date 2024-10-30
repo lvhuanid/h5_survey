@@ -1,5 +1,5 @@
 # 使用 Nginx 官方镜像
-FROM nginx:alpine
+FROM nginx
 
 # 复制构建好的文件到 Nginx 的 html 目录
 COPY dist /usr/share/nginx/html
